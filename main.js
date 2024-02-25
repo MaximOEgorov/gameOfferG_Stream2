@@ -19,7 +19,6 @@ function renderApp() {
     subscribe(() => {
         if (prevStatus !== getGameStatus()) {
             render();
-            prevStatus = getGameStatus();
         }
     });
 
@@ -27,13 +26,15 @@ function renderApp() {
 
     function render() {
         document.body.innerHTML = "";
-        if (getGameStatus() === GAME_STATUSES.WIN) {
+        const gameStatus = getGameStatus();
+        if (gameStatus === GAME_STATUSES.WIN) {
             const WinEl = Win();
             document.body.append(WinEl);
         } else {
             const gameEl = Game();
             document.body.append(gameEl);
         }
+        prevStatus = gameStatus;
     }
 
     render();
