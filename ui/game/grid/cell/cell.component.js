@@ -1,4 +1,5 @@
 import {
+    EVENTS,
     getGoogleCoordinates, getPlayer1Position, getPlayer2Position, subscribe
 } from "../../../../data/game.data.js";
 import {Google, Player1, Player2} from "./google/google.component.js";
@@ -34,7 +35,21 @@ export function Cell(x, y) {
         prevState = currentState;
     }
 
-    subscribe(()=>{
+    subscribe(EVENTS.GOOGLE_JUMPED, ()=>{
+        const currentState = getCurrentState();
+        if (currentState !== prevState) {
+            render();
+        }
+    });
+
+    subscribe(EVENTS.PLAYER1_MOVED, ()=>{
+        const currentState = getCurrentState();
+        if (currentState !== prevState) {
+            render();
+        }
+    });
+
+    subscribe(EVENTS.PLAYER2_MOVED, ()=>{
         const currentState = getCurrentState();
         if (currentState !== prevState) {
             render();

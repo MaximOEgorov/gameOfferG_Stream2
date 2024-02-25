@@ -1,6 +1,7 @@
 import {Game} from './ui/game/game.component.js'
 import {Win} from "./ui/game/win/win.component.js";
 import {
+    EVENTS,
     GAME_STATUSES,
     getGameStatus,
     movePlayer1Down,
@@ -16,13 +17,9 @@ import {
 
 function renderApp() {
 
-    subscribe(() => {
-        if (prevStatus !== getGameStatus()) {
+    subscribe(EVENTS.GAME_STATUS_CHANGED, () => {
             render();
-        }
-    });
-
-    let prevStatus;
+        });
 
     function render() {
         document.body.innerHTML = "";
@@ -34,9 +31,7 @@ function renderApp() {
             const gameEl = Game();
             document.body.append(gameEl);
         }
-        prevStatus = gameStatus;
     }
-
     render();
 }
 

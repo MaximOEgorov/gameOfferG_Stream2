@@ -1,3 +1,11 @@
+export const EVENTS = {
+    SCORE_CHANGED: 'score-changed',
+    GOOGLE_JUMPED: 'google-jumped',
+    PLAYER1_MOVED: 'player1-moved',
+    PLAYER2_MOVED: 'player2-moved',
+    GAME_STATUS_CHANGED: 'game-status-changed'
+}
+
 export const GAME_STATUSES = {
     WIN: 'win',
     IN_PROGRESS: 'in-progress'
@@ -18,14 +26,20 @@ const data = {
     ]
 };
 
-let _subscribers = [];
+let listeners = {
+    [EVENTS.SCORE_CHANGED]: [],
+    [EVENTS.GOOGLE_JUMPED]: [],
+    [EVENTS.PLAYER1_MOVED]: [],
+    [EVENTS.PLAYER2_MOVED]: [],
+    [EVENTS.GAME_STATUS_CHANGED]: []
+};
 
-export function subscribe(newSubscriber) {
-    _subscribers.push(newSubscriber);
+export function subscribe(eventName, observer) {
+    listeners[eventName].push(observer);
 }
 
-function _notify() {
-    _subscribers.forEach((subscriber) => {
+function _notify(eventName) {
+    listeners[eventName].forEach((subscriber) => {
         try {
             subscriber()
         } catch (error) {
@@ -41,7 +55,7 @@ function runGoogleJumpInterval() {
     runGoogleJumpIntervalId = setInterval(() => {
         _missGoogle();
         changeGoogleCoordinates(true);
-        _notify();
+        _notify(EVENTS.GOOGLE_JUMPED);
     }, 2000);
 }
 
@@ -67,7 +81,7 @@ function changeGoogleCoordinates() {
 function _missGoogle() {
     data.missPoints++;
     changeGoogleCoordinates();
-    _notify();
+    _notify(EVENTS.SCORE_CHANGED);
 }
 
 function _getRandom(N) {
@@ -81,20 +95,27 @@ export function catchGoogle(player) {
     if (player.points === data.winPoints) {
         data.win = true;
         clearInterval(runGoogleJumpIntervalId)
+        _notify(EVENTS.GAME_STATUS_CHANGED);
     } else {
         changeGoogleCoordinates();
         runGoogleJumpInterval();
+        _notify(EVENTS.GOOGLE_JUMPED);
     }
-    _notify();
+    _notify(EVENTS.SCORE_CHANGED);
 }
 
 export function restart() {
     data.catchPoints = 0;
     data.missPoints = 0;
+    data.x = 0;
+    data.y = 0;
     data.win = false;
+    runGoogleJumpInterval();
+    _notify(EVENTS.GAME_STATUS_CHANGED);
 }
 
-function movePlayer(delta, player) {
+function movePlayer(delta, playerIndex) {
+    const player = data.players[playerIndex];
     const newX = player.x + delta.x;
     const newY = player.y + delta.y;
 
@@ -108,7 +129,7 @@ function movePlayer(delta, player) {
         catchGoogle(player)
     }
 
-    _notify();
+    _notify(playerIndex === 0? EVENTS.PLAYER1_MOVED : EVENTS.PLAYER2_MOVED);
 }
 
 function isNewCoordsInsideGrid(x, y) {
@@ -126,47 +147,36 @@ function isCellOfGridIsFree(newX, newY) {
 }
 
 export function movePlayer1Up() {
-    movePlayer({x: 0, y: -1}, data.players[0]);
+    movePlayer({x: 0, y: -1}, 0);
 }
 
 export function movePlayer1Down() {
-    movePlayer({x: 0, y: 1}, data.players[0]);
+    movePlayer({x: 0, y: 1}, 0);
 }
 
 export function movePlayer1Left() {
-    movePlayer({x: -1, y: 0}, data.players[0]);
+    movePlayer({x: -1, y: 0}, 0);
 }
 
 export function movePlayer1Right() {
-    movePlayer({x: 1, y: 0}, data.players[0]);
+    movePlayer({x: 1, y: 0}, 0);
 }
 
 export function movePlayer2Up() {
-    movePlayer({x: 0, y: -1}, data.players[1]);
+    movePlayer({x: 0, y: -1}, 1);
 }
 
 export function movePlayer2Down() {
-    movePlayer({x: 0, y: 1}, data.players[1]);
+    movePlayer({x: 0, y: 1}, 1);
 }
 
 export function movePlayer2Left() {
-    movePlayer({x: -1, y: 0}, data.players[1]);
+    movePlayer({x: -1, y: 0}, 1);
 }
 
 export function movePlayer2Right() {
-    movePlayer({x: 1, y: 0}, data.players[1]);
+    movePlayer({x: 1, y: 0}, 1);
 }
-
-function checkCatching() {
-    if (
-        data.players[0].x === data.x &&
-        data.players[0].y === data.y
-    ) {
-        console.log("win");
-        catchGoogle();
-    }
-}
-
 
 // getter
 

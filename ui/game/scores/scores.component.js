@@ -1,13 +1,11 @@
-import {getScore, subscribe} from "../../../data/game.data.js";
+import {EVENTS, getScore, subscribe} from "../../../data/game.data.js";
 
 export function Scores() {
     const containerElement = document.createElement('div');
     let prevState = {};
 
-    subscribe(() => {
-        if (prevState !== getScore()) {
-            render(containerElement);
-        }
+    subscribe(EVENTS.SCORE_CHANGED, () => {
+        render(containerElement);
     })
 
     function render() {

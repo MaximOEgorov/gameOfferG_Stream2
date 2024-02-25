@@ -7,9 +7,9 @@ import { Cell } from "./cell/cell.component.js";
 export function GameGrid() {
   const containerElement = document.createElement("table");
 
-  subscribe(() => {
+/*  subscribe(() => {
     update(containerElement);
-  });
+  });*/
   update(containerElement);
 
   return containerElement;
