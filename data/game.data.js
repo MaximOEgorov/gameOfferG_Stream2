@@ -1,3 +1,9 @@
+export const GAME_SYSTEM_MODES = {
+    CLIENT: 'client',
+    SERVER: 'server',
+    ONLY_CLIENT: 'only-client'
+}
+
 export const EVENTS = {
     SCORE_CHANGED: 'score-changed',
     GOOGLE_JUMPED: 'google-jumped',
@@ -23,7 +29,10 @@ const data = {
     players: [
         {x: 0, y: 1, points: 0},
         {x: 3, y: 4, points: 0},
-    ]
+    ],
+    systemSettings: {
+        mode: GAME_SYSTEM_MODES.ONLY_CLIENT,
+    }
 };
 
 let listeners = {
@@ -33,6 +42,10 @@ let listeners = {
     [EVENTS.PLAYER2_MOVED]: [],
     [EVENTS.GAME_STATUS_CHANGED]: []
 };
+
+export function setSystemGameMode(mode) {
+    data.systemSettings.mode = mode;
+}
 
 export function subscribe(eventName, observer) {
     listeners[eventName].push(observer);
@@ -63,23 +76,34 @@ function runGoogleJumpInterval() {
     }, 2000);
 }
 
-runGoogleJumpInterval();
-
 function changeGoogleCoordinates() {
-    let newX = null;
-    let newY = null;
-    let newCoordsIsEqualOldCoords = null;
+    if (data.systemSettings.mode === GAME_SYSTEM_MODES.ONLY_CLIENT
+        || data.systemSettings.mode === GAME_SYSTEM_MODES.SERVER) {
 
-    do {
-        newX = _getRandom(data.columnsCount);
-        newY = _getRandom(data.rowsCount);
-        newCoordsIsEqualOldCoords = data.x === newX && data.y === newY;
+        let newX = null;
+        let newY = null;
+        let newCoordsIsEqualOldCoords = null;
+
+        do {
+            newX = _getRandom(data.columnsCount);
+            newY = _getRandom(data.rowsCount);
+            newCoordsIsEqualOldCoords = data.x === newX && data.y === newY;
+        }
+        while
+            (newCoordsIsEqualOldCoords || !isCellOfGridIsFree(newX, newY));
+
+        data.x = newX;
+        data.y = newY;
     }
-    while
-        (newCoordsIsEqualOldCoords || !isCellOfGridIsFree(newX, newY));
+}
 
-    data.x = newX;
-    data.y = newY;
+function setGoogleCoordinates(x, y) {
+    if (data.systemSettings.mode !== GAME_SYSTEM_MODES.CLIENT) {
+        return;
+    }
+    data.x = x;
+    data.y = y;
+    _notify(EVENTS.GOOGLE_JUMPED);
 }
 
 function _missGoogle() {
@@ -105,6 +129,13 @@ export function catchGoogle(player) {
         _notify(EVENTS.GOOGLE_JUMPED);
     }
     _notify(EVENTS.SCORE_CHANGED);
+}
+
+export function start() {
+    if (data.systemSettings.mode === GAME_SYSTEM_MODES.ONLY_CLIENT
+        || data.systemSettings.mode === GAME_SYSTEM_MODES.SERVER) {
+        runGoogleJumpInterval();
+    }
 }
 
 export function restart() {
@@ -135,7 +166,7 @@ function movePlayer(delta, playerIndex) {
         catchGoogle(player)
     }
 
-    _notify(playerIndex === 0? EVENTS.PLAYER1_MOVED : EVENTS.PLAYER2_MOVED);
+    _notify(playerIndex === 0 ? EVENTS.PLAYER1_MOVED : EVENTS.PLAYER2_MOVED);
 }
 
 function isNewCoordsInsideGrid(x, y) {

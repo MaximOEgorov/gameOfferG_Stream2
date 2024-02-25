@@ -2,7 +2,7 @@ import {Game} from './ui/game/game.component.js'
 import {Win} from "./ui/game/win/win.component.js";
 import {
     EVENTS,
-    GAME_STATUSES,
+    GAME_STATUSES, GAME_SYSTEM_MODES,
     getGameStatus,
     movePlayer1Down,
     movePlayer1Left,
@@ -11,7 +11,7 @@ import {
     movePlayer2Down,
     movePlayer2Left,
     movePlayer2Right,
-    movePlayer2Up,
+    movePlayer2Up, setSystemGameMode, start,
     subscribe
 } from "./data/game.data.js";
 
@@ -33,6 +33,8 @@ function renderApp() {
         }
     }
     render();
+//    setSystemGameMode(GAME_SYSTEM_MODES.ONLY_CLIENT);
+    start();
 }
 
 renderApp();
