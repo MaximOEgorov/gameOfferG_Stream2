@@ -29,8 +29,6 @@ function renderApp() {
 
 renderApp();
 
-subscribe(renderApp);
-
 window.addEventListener('keyup', (e) => {
     switch (e.code) {
         case 'ArrowUp':

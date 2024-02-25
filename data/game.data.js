@@ -20,8 +20,18 @@ const data = {
 
 let _subscribers = [];
 
+export function subscribe(newSubscriber) {
+    _subscribers.push(newSubscriber);
+}
+
 function _notify() {
-    _subscribers.forEach((subscriber) => subscriber());
+    _subscribers.forEach((subscriber) => {
+        try {
+            subscriber()
+        } catch (error) {
+            console.log('ERROR occurs inside ' + subscriber.name);
+        }
+    });
 }
 
 let runGoogleJumpIntervalId = null;
@@ -82,10 +92,6 @@ export function restart() {
     data.catchPoints = 0;
     data.missPoints = 0;
     data.win = false;
-}
-
-export function subscribe(newSubscriber) {
-    _subscribers.push(newSubscriber);
 }
 
 function movePlayer(delta, player) {
