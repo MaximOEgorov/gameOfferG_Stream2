@@ -5,28 +5,41 @@ import {Google, Player1, Player2} from "./google/google.component.js";
 
 export function Cell(x, y) {
     const cellElement = document.createElement("td");
+    let prevState = 'empty';
 
-    function render () {
-        const googlePosition = getGoogleCoordinates();
-        const Player1Position = getPlayer1Position();
-        const Player2Position = getPlayer2Position();
-
-        cellElement.innerHTML = '';
-
-        if (x === googlePosition.x && y === googlePosition.y) {
-            cellElement.append(Google());
-        }
-
-        if (x === Player1Position.x && y === Player1Position.y) {
-            cellElement.append(Player1());
-        }
-
-        if (x === Player2Position.x && y === Player2Position.y) {
-            cellElement.append(Player2());
-        }
+    function getCurrentState() {
+        if (x === getGoogleCoordinates().x && y === getGoogleCoordinates().y) {
+            return 'google';
+        } else if (x === getPlayer1Position().x && y === getPlayer1Position().y) {
+            return 'player1';
+        } else if (x === getPlayer2Position().x && y === getPlayer2Position().y) {
+            return 'player2';
+        } else return 'empty';
     }
 
-    subscribe(render);
+    function render() {
+        cellElement.innerHTML = '';
+        const currentState = getCurrentState();
+        switch (currentState) {
+            case 'google':
+                cellElement.append(Google());
+                break;
+            case 'player1':
+                cellElement.append(Player1());
+                break;
+            case 'player2':
+                cellElement.append(Player2());
+                break;
+        }
+        prevState = currentState;
+    }
+
+    subscribe(()=>{
+        const currentState = getCurrentState();
+        if (currentState !== prevState) {
+            render();
+        }
+    });
 
     render();
 
