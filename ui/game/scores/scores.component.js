@@ -1,19 +1,23 @@
-import { getGoogleCoordinates, getScore, subscribe } from "../../../data/game.data.js";
+import {getScore, subscribe} from "../../../data/game.data.js";
+
 export function Scores() {
+    const containerElement = document.createElement('div');
+    let prevState = {};
 
     subscribe(() => {
-        containerElement.innerHTML = '';
-        update(containerElement);
+        if (prevState !== getScore()) {
+            render(containerElement);
+        }
     })
 
-    const containerElement = document.createElement('div');
-    update(containerElement);
+    function render() {
+        const score = getScore();
+        containerElement.innerHTML = '';
+        containerElement.append('Player1 points: ' + score.player1Points + '; Player2 points: ' + score.player2Points + '; miss: ' + score.missPoints);
+        prevState = score;
+    }
 
+    render();
     return containerElement;
-}
 
-function update(containerElement) {
-    const score = getScore();
-    const googleCoordinates = getGoogleCoordinates();
-    containerElement.append('Player1 points: ' + score.player1Points + '; Player2 points: ' + score.player2Points + '; miss: ' + score.missPoints + ' coords: '+googleCoordinates.x+' - '+googleCoordinates.y);
 }
