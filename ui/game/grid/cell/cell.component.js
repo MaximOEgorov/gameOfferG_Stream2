@@ -1,6 +1,6 @@
 import {
     EVENTS,
-    getGoogleCoordinates, getPlayer1Position, getPlayer2Position, subscribe
+    getGoogleCoordinates, getPlayer1Position, getPlayer2Position, subscribe, unsubscribe
 } from "../../../../data/game.data.js";
 import {Google, Player1, Player2} from "./google/google.component.js";
 
@@ -21,40 +21,32 @@ export function Cell(x, y) {
     function render() {
         cellElement.innerHTML = '';
         const currentState = getCurrentState();
+
+        unsubscribe(EVENTS.GOOGLE_JUMPED,render);
+        unsubscribe(EVENTS.PLAYER1_MOVED,render);
+        unsubscribe(EVENTS.PLAYER2_MOVED,render);
+
         switch (currentState) {
             case 'google':
+                subscribe(EVENTS.GOOGLE_JUMPED,render);
                 cellElement.append(Google());
                 break;
             case 'player1':
+                subscribe(EVENTS.PLAYER1_MOVED,render);
                 cellElement.append(Player1());
                 break;
             case 'player2':
+                subscribe(EVENTS.PLAYER2_MOVED,render);
                 cellElement.append(Player2());
+                break;
+            case 'empty':
+                subscribe(EVENTS.GOOGLE_JUMPED,render);
+                subscribe(EVENTS.PLAYER1_MOVED,render);
+                subscribe(EVENTS.PLAYER2_MOVED,render);
                 break;
         }
         prevState = currentState;
     }
-
-    subscribe(EVENTS.GOOGLE_JUMPED, ()=>{
-        const currentState = getCurrentState();
-        if (currentState !== prevState) {
-            render();
-        }
-    });
-
-    subscribe(EVENTS.PLAYER1_MOVED, ()=>{
-        const currentState = getCurrentState();
-        if (currentState !== prevState) {
-            render();
-        }
-    });
-
-    subscribe(EVENTS.PLAYER2_MOVED, ()=>{
-        const currentState = getCurrentState();
-        if (currentState !== prevState) {
-            render();
-        }
-    });
 
     render();
 

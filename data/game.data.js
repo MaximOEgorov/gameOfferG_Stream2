@@ -38,6 +38,10 @@ export function subscribe(eventName, observer) {
     listeners[eventName].push(observer);
 }
 
+export function unsubscribe(eventName, observer) {
+    listeners[eventName] = listeners[eventName].filter(o => o !== observer);
+}
+
 function _notify(eventName) {
     listeners[eventName].forEach((subscriber) => {
         try {
@@ -79,7 +83,6 @@ function changeGoogleCoordinates() {
 }
 
 function _missGoogle() {
-    data.missPoints++;
     changeGoogleCoordinates();
     _notify(EVENTS.SCORE_CHANGED);
 }
@@ -107,11 +110,14 @@ export function catchGoogle(player) {
 export function restart() {
     data.catchPoints = 0;
     data.missPoints = 0;
+    data.players[0].points = 0;
+    data.players[1].points = 0;
     data.x = 0;
     data.y = 0;
     data.win = false;
     runGoogleJumpInterval();
     _notify(EVENTS.GAME_STATUS_CHANGED);
+    _notify(EVENTS.SCORE_CHANGED);
 }
 
 function movePlayer(delta, playerIndex) {
