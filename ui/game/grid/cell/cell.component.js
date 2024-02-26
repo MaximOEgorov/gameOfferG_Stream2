@@ -5,23 +5,26 @@ import {
     getPlayer2Position} from "../../../../data.adapter.js";
 import {EVENTS} from "../../../../back/EVENTS.js";
 
-export function Cell(x, y) {
+export async function Cell(x, y) {
     const cellElement = document.createElement("td");
     let prevState = 'empty';
 
-    function getCurrentState() {
-        if (x === getGoogleCoordinates().x && y === getGoogleCoordinates().y) {
+    async function getCurrentState() {
+        const googlePosition = await getGoogleCoordinates();
+        const player1Position = await getPlayer1Position();
+        const player2Position = await getPlayer2Position();
+        if (x === googlePosition.x && y === googlePosition.y) {
             return 'google';
-        } else if (x === getPlayer1Position().x && y === getPlayer1Position().y) {
+        } else if (x === player1Position.x && y === player1Position.y) {
             return 'player1';
-        } else if (x === getPlayer2Position().x && y === getPlayer2Position().y) {
+        } else if (x === player2Position.x && y === player2Position.y) {
             return 'player2';
         } else return 'empty';
     }
 
-    function render() {
+    async function render() {
         cellElement.innerHTML = '';
-        const currentState = getCurrentState();
+        const currentState = await getCurrentState();
 
         unsubscribe(EVENTS.GOOGLE_JUMPED, render);
         unsubscribe(EVENTS.PLAYER1_MOVED, render);
@@ -49,7 +52,7 @@ export function Cell(x, y) {
         prevState = currentState;
     }
 
-    render();
+    await render();
 
     return cellElement;
 }

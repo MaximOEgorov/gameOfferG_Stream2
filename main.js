@@ -25,10 +25,10 @@ function renderApp() {
         document.body.innerHTML = "";
         const gameStatus = await getGameStatus();
         if (gameStatus === GAME_STATUSES.WIN) {
-            const WinEl = Win();
+            const WinEl = await Win();
             document.body.append(WinEl);
         } else {
-            const gameEl = Game();
+            const gameEl = await Game();
             document.body.append(gameEl);
         }
     }

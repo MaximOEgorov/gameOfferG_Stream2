@@ -1,8 +1,8 @@
 import {restart, getScore} from "../../../data.adapter.js";
 
-export function Win() {
+export async function Win() {
     const element = document.createElement('div');
-    const score = getScore();
+    const score = await getScore();
     element.append(`You win, player1 points: ${score.player1Points}; player2 points: ${score.player2Points}; miss: ${score.missPoints}`)
     const restartButton = RestartButton();
     element.append(restartButton)

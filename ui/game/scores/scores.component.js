@@ -1,7 +1,7 @@
 import {subscribe, getScore} from "../../../data.adapter.js";
 import {EVENTS} from "../../../back/EVENTS.js";
 
-export function Scores() {
+export async function Scores() {
     const containerElement = document.createElement('div');
     let prevState = {};
 
@@ -9,8 +9,8 @@ export function Scores() {
         render(containerElement);
     })
 
-    function render() {
-        const score = getScore();
+    async function render() {
+        const score = await getScore();
         containerElement.innerHTML = '';
         containerElement.append('Player1 points: ' + score.player1Points + '; Player2 points: ' + score.player2Points + '; miss: ' + score.missPoints);
         prevState = score;

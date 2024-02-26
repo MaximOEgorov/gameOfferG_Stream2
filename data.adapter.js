@@ -8,6 +8,11 @@ let listeners = {
     [EVENTS.GAME_STATUS_CHANGED]: []
 };
 
+const eventSource = new EventSource('http://localhost:3001/events');
+eventSource.onmessage = function(event) {
+    _notify(event.data);
+};
+
 export function subscribe(eventName, observer) {
     listeners[eventName].push(observer);
 }
@@ -32,15 +37,35 @@ export async function getGameStatus () {
     return data.status;
 }
 
-export function getScore () {}
+export async function getScore () {
+    const rawResult = await fetch('http://localhost:3001/scores')
+    const data = await rawResult.json();
+    return data;
+}
 
-export function getGridSize () {}
+export async function getGridSize () {
+    const rawResult = await fetch('http://localhost:3001/grid-size')
+    const data = await rawResult.json();
+    return data;
+}
 
-export function getPlayer1Position () {}
+export async function getPlayer1Position () {
+    const rawResult = await fetch('http://localhost:3001/player1-position')
+    const data = await rawResult.json();
+    return data;
+}
 
-export function getPlayer2Position () {}
+export async function getPlayer2Position () {
+    const rawResult = await fetch('http://localhost:3001/player2-position')
+    const data = await rawResult.json();
+    return data;
+}
 
-export function getGoogleCoordinates () {}
+export async function getGoogleCoordinates () {
+    const rawResult = await fetch('http://localhost:3001/google-position')
+    const data = await rawResult.json();
+    return data;
+}
 
 export function movePlayer1Down () {}
 
