@@ -1,7 +1,7 @@
 import {
   getGridSize,
   subscribe,
-} from "../../../data/game.data.js";
+} from "../../../data.adapter.js";
 import { Cell } from "./cell/cell.component.js";
 
 export function GameGrid() {

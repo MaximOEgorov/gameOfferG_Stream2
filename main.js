@@ -1,8 +1,8 @@
 import {Game} from './ui/game/game.component.js'
 import {Win} from "./ui/game/win/win.component.js";
 import {
-    EVENTS,
-    GAME_STATUSES, GAME_SYSTEM_MODES,
+    subscribe,
+    unsubscribe,
     getGameStatus,
     movePlayer1Down,
     movePlayer1Left,
@@ -11,19 +11,19 @@ import {
     movePlayer2Down,
     movePlayer2Left,
     movePlayer2Right,
-    movePlayer2Up, setSystemGameMode, start,
-    subscribe
-} from "./data/game.data.js";
+    movePlayer2Up, start
+} from "./data.adapter.js";
+import {EVENTS} from "./back/EVENTS.js";
+import {GAME_STATUSES} from "./back/GAME_STATUSES.js";
 
 function renderApp() {
-
     subscribe(EVENTS.GAME_STATUS_CHANGED, () => {
-            render();
-        });
+        render();
+    })
 
-    function render() {
+    async function render() {
         document.body.innerHTML = "";
-        const gameStatus = getGameStatus();
+        const gameStatus = await getGameStatus();
         if (gameStatus === GAME_STATUSES.WIN) {
             const WinEl = Win();
             document.body.append(WinEl);
@@ -32,8 +32,8 @@ function renderApp() {
             document.body.append(gameEl);
         }
     }
+
     render();
-//    setSystemGameMode(GAME_SYSTEM_MODES.ONLY_CLIENT);
     start();
 }
 

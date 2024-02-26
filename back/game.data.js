@@ -1,21 +1,5 @@
-export const GAME_SYSTEM_MODES = {
-    CLIENT: 'client',
-    SERVER: 'server',
-    ONLY_CLIENT: 'only-client'
-}
-
-export const EVENTS = {
-    SCORE_CHANGED: 'score-changed',
-    GOOGLE_JUMPED: 'google-jumped',
-    PLAYER1_MOVED: 'player1-moved',
-    PLAYER2_MOVED: 'player2-moved',
-    GAME_STATUS_CHANGED: 'game-status-changed'
-}
-
-export const GAME_STATUSES = {
-    WIN: 'win',
-    IN_PROGRESS: 'in-progress'
-}
+import {EVENTS} from "./EVENTS.js";
+import {GAME_STATUSES} from "./GAME_STATUSES.js";
 
 const data = {
     catchPoints: 0,
@@ -31,7 +15,7 @@ const data = {
         {x: 3, y: 4, points: 0},
     ],
     systemSettings: {
-        mode: GAME_SYSTEM_MODES.ONLY_CLIENT,
+        mode: null,
     }
 };
 
@@ -77,33 +61,20 @@ function runGoogleJumpInterval() {
 }
 
 function changeGoogleCoordinates() {
-    if (data.systemSettings.mode === GAME_SYSTEM_MODES.ONLY_CLIENT
-        || data.systemSettings.mode === GAME_SYSTEM_MODES.SERVER) {
+    let newX = null;
+    let newY = null;
+    let newCoordsIsEqualOldCoords = null;
 
-        let newX = null;
-        let newY = null;
-        let newCoordsIsEqualOldCoords = null;
-
-        do {
-            newX = _getRandom(data.columnsCount);
-            newY = _getRandom(data.rowsCount);
-            newCoordsIsEqualOldCoords = data.x === newX && data.y === newY;
-        }
-        while
-            (newCoordsIsEqualOldCoords || !isCellOfGridIsFree(newX, newY));
-
-        data.x = newX;
-        data.y = newY;
+    do {
+        newX = _getRandom(data.columnsCount);
+        newY = _getRandom(data.rowsCount);
+        newCoordsIsEqualOldCoords = data.x === newX && data.y === newY;
     }
-}
+    while
+        (newCoordsIsEqualOldCoords || !isCellOfGridIsFree(newX, newY));
 
-function setGoogleCoordinates(x, y) {
-    if (data.systemSettings.mode !== GAME_SYSTEM_MODES.CLIENT) {
-        return;
-    }
-    data.x = x;
-    data.y = y;
-    _notify(EVENTS.GOOGLE_JUMPED);
+    data.x = newX;
+    data.y = newY;
 }
 
 function _missGoogle() {
@@ -132,10 +103,7 @@ export function catchGoogle(player) {
 }
 
 export function start() {
-    if (data.systemSettings.mode === GAME_SYSTEM_MODES.ONLY_CLIENT
-        || data.systemSettings.mode === GAME_SYSTEM_MODES.SERVER) {
-        runGoogleJumpInterval();
-    }
+    runGoogleJumpInterval();
 }
 
 export function restart() {

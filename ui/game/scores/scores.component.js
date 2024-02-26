@@ -1,4 +1,5 @@
-import {EVENTS, getScore, subscribe} from "../../../data/game.data.js";
+import {subscribe, getScore} from "../../../data.adapter.js";
+import {EVENTS} from "../../../back/EVENTS.js";
 
 export function Scores() {
     const containerElement = document.createElement('div');

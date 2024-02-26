@@ -1,4 +1,4 @@
-import { getGridSize } from "../../../../../data/game.data.js";
+import { getGridSize } from "../../../../../back/game.data.js";
 import { renderSelect } from "../../common/ui/select.js";
 
 export function GridSizeSelect() {

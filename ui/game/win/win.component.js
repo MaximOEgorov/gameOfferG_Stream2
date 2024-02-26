@@ -1,4 +1,4 @@
-import {restart, getScore} from "../../../data/game.data.js";
+import {restart, getScore} from "../../../data.adapter.js";
 
 export function Win() {
     const element = document.createElement('div');
