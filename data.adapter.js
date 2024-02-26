@@ -9,7 +9,7 @@ let listeners = {
 };
 
 const eventSource = new EventSource('http://localhost:3001/events');
-eventSource.onmessage = function(event) {
+eventSource.onmessage = function (event) {
     _notify(event.data);
 };
 
@@ -31,58 +31,94 @@ function _notify(eventName) {
     });
 }
 
-export async function getGameStatus () {
+export async function getGameStatus() {
     const rawResult = await fetch('http://localhost:3001/game-status')
     const data = await rawResult.json();
     return data.status;
 }
 
-export async function getScore () {
+export async function getScore() {
     const rawResult = await fetch('http://localhost:3001/scores')
     const data = await rawResult.json();
     return data;
 }
 
-export async function getGridSize () {
+export async function getGridSize() {
     const rawResult = await fetch('http://localhost:3001/grid-size')
     const data = await rawResult.json();
     return data;
 }
 
-export async function getPlayer1Position () {
+export async function getPlayer1Position() {
     const rawResult = await fetch('http://localhost:3001/player1-position')
     const data = await rawResult.json();
     return data;
 }
 
-export async function getPlayer2Position () {
+export async function getPlayer2Position() {
     const rawResult = await fetch('http://localhost:3001/player2-position')
     const data = await rawResult.json();
     return data;
 }
 
-export async function getGoogleCoordinates () {
+export async function getGoogleCoordinates() {
     const rawResult = await fetch('http://localhost:3001/google-position')
     const data = await rawResult.json();
     return data;
 }
 
-export function movePlayer1Down () {}
+function movePlayer1(_dir) {
+    fetch('http://localhost:3001/player1-position',
+        {
+            method: "put",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({dir: _dir})
+        });
+}
 
-export function movePlayer1Left () {}
+function movePlayer2(_dir) {
+    fetch('http://localhost:3001/player2-position',
+        {
+            method: "put",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({dir: _dir})
+        });
+}
 
-export function movePlayer1Right () {}
+export function movePlayer1Down() {
+    movePlayer1('d');
+}
 
-export function movePlayer1Up () {}
+export function movePlayer1Left() {
+    movePlayer1('l');
+}
 
-export function movePlayer2Down () {}
+export function movePlayer1Right() {
+    movePlayer1('r');
+}
 
-export function movePlayer2Left () {}
+export function movePlayer1Up() {
+    movePlayer1('u');
+}
 
-export function movePlayer2Right () {}
+export function movePlayer2Down() {
+    movePlayer2('d');
+}
 
-export function movePlayer2Up () {}
+export function movePlayer2Left() {
+    movePlayer2('l');
+}
 
-export function restart () {}
+export function movePlayer2Right() {
+    movePlayer2('r');
+}
 
-export function start () {}
+export function movePlayer2Up() {
+    movePlayer2('u');
+}
+
+export function restart() {
+}
+
+export function start() {
+}
