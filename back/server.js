@@ -15,10 +15,22 @@ import {
     movePlayer2Right, movePlayer2Left, movePlayer2Up, movePlayer2Down
 } from "./game.data.js";
 import {EVENTS} from "./EVENTS.js";
+import session from "express-session";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(session({
+    secret: 'your-secret-key', // Секретный ключ
+    resave: false, // не пересохранять между сессиями
+    saveUninitialized: false,
+    cookie: {
+        secure: false,
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24
+    }
+}));
+
 const PORT = 3001;
 
 app.get('/game-status', (req, res) => {
@@ -80,6 +92,8 @@ app.put('/player2-position', (req, res) => {
     }
     res.end();
 })
+
+const browsers = [];
 
 app.get('/events', (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
