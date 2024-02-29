@@ -78,6 +78,7 @@ function changeGoogleCoordinates() {
 }
 
 function _missGoogle() {
+    data.missPoints++;
     changeGoogleCoordinates();
     _notify(EVENTS.SCORE_CHANGED);
 }

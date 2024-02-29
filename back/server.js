@@ -12,7 +12,7 @@ import {
     getGameStatus,
     unsubscribe,
     movePlayer1Right, movePlayer1Left, movePlayer1Up, movePlayer1Down,
-    movePlayer2Right, movePlayer2Left, movePlayer2Up, movePlayer2Down
+    movePlayer2Right, movePlayer2Left, movePlayer2Up, movePlayer2Down, restart
 } from "./game.data.js";
 import {EVENTS} from "./EVENTS.js";
 import session from "express-session";
@@ -91,6 +91,12 @@ app.put('/player2-position', (req, res) => {
             break;
     }
     res.end();
+})
+
+app.put('/restart-game', (req, res) => {
+    if (req.body.restart === true) {
+        restart();
+    }
 })
 
 const browsers = [];

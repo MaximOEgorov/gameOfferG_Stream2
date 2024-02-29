@@ -118,6 +118,12 @@ export function movePlayer2Up() {
 }
 
 export function restart() {
+    fetch('http://localhost:3001/restart-game',
+        {
+            method: "put",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({restart: true})
+        });
 }
 
 export function start() {
