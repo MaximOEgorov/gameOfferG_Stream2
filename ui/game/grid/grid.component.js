@@ -10,6 +10,7 @@ async function getCurrentState() {
     const googlePosition = await getGoogleCoordinates();
     const player1Position = await getPlayer1Position();
     const player2Position = await getPlayer2Position();
+    console.log(JSON.stringify(player1Position))
     return {
         googlePosition: googlePosition,
         player1Position: player1Position,
@@ -29,11 +30,15 @@ export async function GameGrid() {
         render(containerElement)
     });
 
+    let prevState = {}
 
     async function render(containerEl) {
         const gridSize = await getGridSize();
         const CurrentState = await getCurrentState();
+        if(prevState.player2Position){
+            console.log(JSON.stringify(CurrentState.player2Position) === JSON.stringify(prevState.player2Position))
 
+        }
         containerEl.innerHTML = "";
         for (let y = 0; y < gridSize.rowsCount; y++) {
             const row = document.createElement("tr");
@@ -53,6 +58,7 @@ export async function GameGrid() {
             }
             containerEl.append(row);
         }
+        prevState = CurrentState
     }
 
     render(containerElement);
